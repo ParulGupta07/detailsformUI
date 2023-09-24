@@ -1,70 +1,54 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import InputBox from './Components/Input-box/input-box.component';
+import ButtonComponent from './Components/todo-button/buttonComponent.component';
 
 const App = () => {
 
-  const [name, SetName] = useState('');
-  const [email, SetEmail] = useState('');
-  const [contact, setContact] = useState('');
+  const [submitFormData, setSubmitFormData] = useState({
+    name: "",
+    email: "",
+    contact: "",
+  });
+
+  const submitFormHandler = (event) => {
+    const fieldName = event.target.getAttribute("name");
+    const fieldValue = event.target.value;
+    const formData = { ...submitFormData };
+    formData[fieldName] = fieldValue;
+    setSubmitFormData(formData);
+  }
+
   const [submitdone, SetSubmitDone] = useState(false);
-
-
-  const onNameChange = (event) => {
-    const nameTyped = event.target.value;
-    SetName(nameTyped);
-    SetSubmitDone(false);
-  }
-
-  const onEmailChange = (event) => {
-    const emailTyped = event.target.value;
-    SetEmail(emailTyped);
-    SetSubmitDone(false);
-  }
-
-  const onContactChange = (event) => {
-    const contactTyped = event.target.value;
-    SetSubmitDone(false);
-    setContact(contactTyped);
-  }
-
-
 
   const handleSubmit = (sub) => {
     sub.preventDefault();
-    console.log(name);
-    console.log(email);
-    console.log(contact);
-    if (name === '' || email === '' || contact === '') {
+    console.log(submitFormData.name);
+    console.log(submitFormData.email);
+    console.log(submitFormData.contact);
+    if (!(submitFormData.name && submitFormData.email && submitFormData.contact)) {
       SetSubmitDone(false);
       console.log("Enter all fields appropriately");
     }
     else {
       SetSubmitDone(true);
     }
-
-
   }
-  useEffect(
-    () => {
-      const exactSubmit = submitdone;
-    }, [submitdone]
-  )
-
 
   if (submitdone) {
     return (
       <div className='show-details'>
         <h1>Details submitted are as below:</h1>
         <div>
-          <p>Name: {name}</p>
-          <p>Email: {email}</p>
-          <p>Contact: {contact}</p>
+          <p>Name: {submitFormData.name}</p>
+          <p>Email: {submitFormData.email}</p>
+          <p>Contact: {submitFormData.contact}</p>
         </div>
-        <button type='text'
-          className='submit-btn'>Edit</button>
+        <ButtonComponent type='text'
+          className='button'
+          btntext='Edit'
+        />
       </div>
-
     )
   }
   else {
@@ -77,7 +61,8 @@ const App = () => {
             placeholder='Enter your name*'
             className='input-box'
             type='text'
-            onChangeHandler={onNameChange}
+            onChangeHandler={submitFormHandler}
+            name='name'
           />
           <br />
           <label className='form-label'>Email: </label>
@@ -85,26 +70,28 @@ const App = () => {
             placeholder='Enter your Email Id*'
             className='input-box'
             type='email'
-            onChangeHandler={onEmailChange}
+            onChangeHandler={submitFormHandler}
+            name='email'
           />
           <br />
           <label className='form-label'>Contact Number: </label>
           <InputBox
             placeholder='xxx-xxx-xxxx*'
-            onChangeHandler={onContactChange}
+            onChangeHandler={submitFormHandler}
             className='input-box'
             type='tel'
             pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-
+            name='contact'
           />
           <br />
-          <button type='submit' className='submit-btn'>Submit</button>
+          <ButtonComponent type='submit'
+            className='button'
+            btntext='Submit'
+          />
         </form>
       </div>
     );
   }
-
-
 }
 
 export default App;
